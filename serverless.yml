@@ -1,4 +1,4 @@
-service: line-icon-switch
+service: line-icon-switch-python
 provider:
   name: aws
   runtime: python3.7
