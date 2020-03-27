@@ -1,4 +1,4 @@
-service: aws-wsgi-flask
+service: line-icon-switch
 provider:
   name: aws
   runtime: python3.7
