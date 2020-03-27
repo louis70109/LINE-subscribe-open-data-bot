@@ -20,4 +20,5 @@ node_modules/
 # Serverless directories
 .serverless
 .vscode/
-.package-lock.json
+.env
+.idea/*
