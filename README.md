@@ -32,6 +32,7 @@ Make sure you already registered, if you need use LINE Bot.
 
 1. first terminal window
 ```
+cp .env.sample .env
 pip install -r requirements.txt --user
 python api.py
 ```
