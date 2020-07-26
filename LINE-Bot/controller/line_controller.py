@@ -39,15 +39,15 @@ class LineController(Resource):
         user_id = event.source.user_id
         sub = routing('^訂閱\s+', text)
         cancel_sub = routing('^取消訂閱\s+', text)
-        all_county = routing('所有區域', text)
+        all_county = routing('所有縣市', text)
         if sub:
             create_user_site(user_id, sub)
             line_bot_api.reply_message(
                 event.reply_token,
                 messages=TextSendMessage(
-                    text=f'訂閱 {sub} 成功！',
+                    text=f'訂閱 {sub[1]} 成功！',
                     quick_reply=QuickReply(items=[
-                        QuickReplyButton(action=MessageAction(label="label", text="所有縣市"))
+                        QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
                     ])
                 )
             )
@@ -56,9 +56,9 @@ class LineController(Resource):
             line_bot_api.reply_message(
                 event.reply_token,
                 messages=TextSendMessage(
-                    text=f'取消訂閱 {cancel_sub} 完成...',
+                    text=f'取消訂閱 {cancel_sub[1]} 完成...',
                     quick_reply=QuickReply(items=[
-                        QuickReplyButton(action=MessageAction(label="label", text="所有縣市"))
+                        QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
                     ])
                 ))
         elif all_county:
@@ -68,7 +68,7 @@ class LineController(Resource):
                 alt_text=event.message.text,
                 contents=CarouselContainer(contents),
                 quick_reply=QuickReply(items=[
-                    QuickReplyButton(action=MessageAction(label="label", text="所有縣市"))
+                    QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
                 ])
             )
             line_bot_api.reply_message(
@@ -77,23 +77,30 @@ class LineController(Resource):
             )
         else:
             rows = find_sites(text)
-            contents = []
-            for row in rows:
-                contents.append(create_county_flex(
-                    line_id=user_id,
-                    county=row['county'],
-                    site=row['site_name'],
-                    status=row['status'],
-                    update_time=row['update_time']
+            contents, flex_message = [], []
+            for index in range(len(rows)):
+                if (index + 1) % 10 == 0:
+                    flex_message.append(FlexSendMessage(
+                        alt_text=text,
+                        contents=CarouselContainer(contents)
+                    ))
+                    contents = []
+                else:
+                    contents.append(create_county_flex(
+                        line_id=user_id,
+                        county=rows[index]['county'],
+                        site=rows[index]['site_name'],
+                        status=rows[index]['status'],
+                        update_time=rows[index]['update_time']
+                    ))
+            flex_message.append(FlexSendMessage(
+                    alt_text=text,
+                    contents=CarouselContainer(contents),
+                    quick_reply=QuickReply(items=[
+                        QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
+                    ])
                 ))
-            message = FlexSendMessage(
-                alt_text=event.message.text,
-                contents=CarouselContainer(contents),
-                quick_reply=QuickReply(items=[
-                    QuickReplyButton(action=MessageAction(label="label", text="所有縣市"))
-                ])
-            )
             line_bot_api.reply_message(
                 event.reply_token,
-                messages=message
+                messages=flex_message
             )
