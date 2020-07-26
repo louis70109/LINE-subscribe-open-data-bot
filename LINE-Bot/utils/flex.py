@@ -115,7 +115,7 @@ def check_user_subscribe_site(line_id, site):
             "action": {
                 "type": "message",
                 "label": "查詢其他區域",
-                "text": "所有區域"
+                "text": "所有縣市"
             }
         }, {
             "type": "button",
@@ -138,7 +138,7 @@ def check_user_subscribe_site(line_id, site):
             "action": {
                 "type": "message",
                 "label": "查詢其他區域",
-                "text": "所有區域"
+                "text": "所有縣市"
             }
         }, {
             "type": "button",
@@ -159,7 +159,7 @@ def counties_template(counties):
     contents, total = [], []
     counties_len = len(counties)
     for index in range(counties_len):
-        if (index+1) == counties_len:
+        if (index + 1) == counties_len:
             contents.append({
                 "type": "button",
                 "action": {
