@@ -1,6 +1,7 @@
-# Distribution / packaging
 .Python
-*.pyc
+*.py
+*.env
+__pycache__
 env/
 build/
 develop-eggs/
@@ -16,10 +17,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-node_modules/
-# Serverless directories
-.serverless
 .vscode/
-.flaskenv
 .idea/*
-.env
+.DS_Store

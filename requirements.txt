@@ -1,5 +1,7 @@
-Flask==1.0.2
-Flask-RESTful==0.3.6
-Flask-Cors==3.0.6
+flask==1.0.2
+flask-restful==0.3.7
+flask_cors
 line-bot-sdk
 python-dotenv
+lotify
+gunicorn
