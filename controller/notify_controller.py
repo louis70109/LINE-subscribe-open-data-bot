@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import request, render_template
+from flask import request, render_template, Response
 from flask_restful import Resource
 from lotify.client import Client
 
@@ -20,13 +20,13 @@ lotify = Client(client_id=CLIENT_ID, client_secret=SECRET, redirect_uri=URI)
 class RootController(Resource):
     def get(self):
         link = lotify.get_auth_link(state=uuid.uuid4())
-        return render_template('notify_index.html', auth_url=link)
+        return Response(render_template('index.html', auth_url=link))
 
 
 class CallbackController(Resource):
     def get(self):
         token = lotify.get_access_token(code=request.args.get('code'))
-        return render_template('notify_confirm.html', token=token)
+        return Response(render_template('confirm.html', token=token))
 
 
 class LineNotifyhController(Resource):
