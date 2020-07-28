@@ -1,14 +1,32 @@
 import os
-from flask import request
-from flask_restful import Resource
-import json
-from linebot import (
-    LineBotApi, WebhookHandler
-)
-from linebot.models import (
-    TextSendMessage,
-    Sender)
+import uuid
 
+from flask import request, render_template
+from flask_restful import Resource
+from lotify.client import Client
+
+CLIENT_ID = os.getenv('LINE_NOTIFY_CLIENT_ID')
+SECRET = os.getenv('LINE_NOTIFY_CLIENT_SECRET')
+URI = os.getenv('LINE_NOTIFY_REDIRECT_URI')
+
+"""
+If your keys are 
+LINE_NOTIFY_CLIENT_ID, LINE_NOTIFY_CLIENT_SECRET, LINE_NOTIFY_REDIRECT_URI
+you can drop them in Client() cause they are default environment name.
+"""
+lotify = Client(client_id=CLIENT_ID, client_secret=SECRET, redirect_uri=URI)
+
+
+class RootController(Resource):
+    def get(self):
+        link = lotify.get_auth_link(state=uuid.uuid4())
+        return render_template('notify_index.html', auth_url=link)
+
+
+class CallbackController(Resource):
+    def get(self):
+        token = lotify.get_access_token(code=request.args.get('code'))
+        return render_template('notify_confirm.html', token=token)
 
 
 class LineNotifyhController(Resource):
@@ -17,28 +35,4 @@ class LineNotifyhController(Resource):
         super().__init__(*args, **kwargs)
 
     def post(self):
-        payload = request.get_json(force=True)
-
-        line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
-        handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
-        token = payload['events'][0]['replyToken']
-        msg = payload['events'][0]['message']['text'].upper()
-
-        if msg in LINE_FRIEND:
-            name = msg
-            icon = LINE_FRIEND[msg]
-            text = TextSendMessage(
-                text=msg,
-                sender=Sender(
-                    name=name,
-                    icon_url=icon))
-        else:
-            text = TextSendMessage(text=msg)
-        line_bot_api.reply_message(token, text)
-
-        response = {
-            "statusCode": 200,
-            "body": json.dumps({"message": 'ok'})
-        }
-
-        return response
+        pass
