@@ -1,0 +1,19 @@
+{
+  "name": "LINE-subscribe-open-data-bot",
+  "description": "LINE Bot+Notify subscribe open data template",
+  "repository": "https://github.com/louis70109/LINE-subscribe-open-data-bot",
+  "keywords": [
+    "LINE",
+    "flask",
+    "python",
+    "static"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python.git"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
