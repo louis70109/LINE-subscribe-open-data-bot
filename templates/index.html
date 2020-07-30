@@ -8,10 +8,35 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>LINE Notify</title>
+    <script src="https://static.line-scdn.net/liff/edge/versions/2.3.1/sdk.js""></script>
   </head>
   <body>
-    <button onclick="window.location.href = '{{ auth_url }}';">
-      點選這裡連結到 LineNotify
-    </button>
+
   </body>
+  <script>
+    liff
+      .init({
+        liffId: '{{ liff_id }}',
+      })
+      .then(() => {
+        if (!liff.isLoggedIn()) liff.login();
+        liff.getProfile().then((profile) => {
+          const userId = profile.userId;
+          fetch('/notify/link', {
+            method: 'POST',
+            body: JSON.stringify({state: userId}),
+            headers: {
+              'content-type': 'application/json'
+            },
+          })
+          .then(res => {
+            res.json().then(r => {window.location.href = r.link})
+          })
+        });
+      })
+      .catch((err) => {
+        alert(err.code, err.message);
+        alert(" 綁定異常，請聯絡作者 ");
+      });
+  </script>
 </html>
