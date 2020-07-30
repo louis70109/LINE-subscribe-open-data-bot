@@ -31,7 +31,7 @@ def find_user_site(line_id, site):
     cur = conn.cursor()
     cur.execute(
         f'''
-            SELECT * FROM user WHERE line_id = "{line_id}" and site_name = "{site}"
+            SELECT * FROM user_site WHERE line_id = "{line_id}" and site_name = "{site}"
         ''')
     row = cur.fetchone()
     conn.close()
@@ -43,7 +43,7 @@ def create_user_site(line_id, site):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute(f'''
-            INSERT OR REPLACE INTO user (line_id, site_name)
+            INSERT OR REPLACE INTO user_site (line_id, site_name)
               VALUES (
                 "{line_id}", 
                 "{site}"
@@ -56,6 +56,20 @@ def remove_user_site(line_id, site):
     conn = sqlite3.connect(os.path.abspath('Air.db'))
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute(f'DELETE FROM user WHERE line_id = "{line_id}" and site_name = "{site}"')
+    cur.execute(f'DELETE FROM user_site WHERE line_id = "{line_id}" and site_name = "{site}"')
+    conn.commit()
+    conn.close()
+
+
+def create_user_notify(line_id, token):
+    conn = sqlite3.connect(os.path.abspath('Air.db'))
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(f'''
+            INSERT OR REPLACE INTO user (line_id, notify_token)
+              VALUES (
+                "{line_id}", 
+                "{token}"
+            )''')
     conn.commit()
     conn.close()
