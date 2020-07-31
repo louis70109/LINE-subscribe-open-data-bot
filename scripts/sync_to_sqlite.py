@@ -1,5 +1,3 @@
-## http://opendata.epa.gov.tw/webapi/Data/REWIQA/?$orderby=SiteName&$skip=0&$top=1000&format=json
-
 import requests
 import sqlite3
 import os
@@ -12,7 +10,7 @@ if airs:
     print("Get data success")
 taichung = []
 
-conn = sqlite3.connect(os.path.abspath('../Air.db'))
+conn = sqlite3.connect(os.path.abspath('Air.db'))
 print("Connecting...")
 c = conn.cursor()
 print("Sync date to DB!!")
@@ -25,8 +23,7 @@ for air in airs:
             "{air.get('AQI')}",
             "{air.get('Status')}",
             "{air.get('PublishTime')}"
-        );
-         ''')
+        );''')
     conn.commit()
 print("Closing...Bye")
 conn.close()

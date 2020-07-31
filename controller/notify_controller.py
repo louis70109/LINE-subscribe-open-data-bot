@@ -43,7 +43,7 @@ class CallbackController(Resource):
         return Response(render_template('confirm.html', liff_id=LIFF_CONFIRM_ID))
 
 
-class LineNotifyhController(Resource):
+class LineNotifyController(Resource):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
