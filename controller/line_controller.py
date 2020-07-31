@@ -10,7 +10,7 @@ from linebot.models import FlexSendMessage, MessageEvent, TextMessage, \
     CarouselContainer, TextSendMessage, QuickReply, QuickReplyButton, MessageAction
 
 from utils.common import routing
-from utils.db import find_sites, create_user_site, remove_user_site, find_counties
+from utils.db import find_sites, create_user_site, remove_user_site, find_counties, find_user_notify_info
 from utils.flex import create_county_flex, counties_template
 
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
@@ -41,18 +41,74 @@ class LineController(Resource):
         cancel_sub = routing('^取消訂閱\s+', text)
         all_county = routing('所有縣市', text)
         if sub:
-            create_user_site(user_id, sub)
-            line_bot_api.reply_message(
-                event.reply_token,
-                messages=TextSendMessage(
-                    text=f'訂閱 {sub[1]} 成功！',
-                    quick_reply=QuickReply(items=[
-                        QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
-                    ])
+            row = find_user_notify_info(user_id)
+            bind_message = None
+            if row is None:
+                bind_message = FlexSendMessage(
+                    alt_text=event.message.text,
+                    contents={
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "🔔 您尚未綁定 LINE Notify\n綁定後即可收到推播訊息 ⬇️",
+                                    "size": "xl",
+                                    "align": "center",
+                                    "wrap": True
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": [
+                                {
+                                    "type": "button",
+                                    "style": "link",
+                                    "height": "sm",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "點我綁定",
+                                        "uri": "https://linecorp.com"
+                                    }
+                                },
+                                {
+                                    "type": "spacer",
+                                    "size": "sm"
+                                }
+                            ],
+                            "flex": 0
+                        }
+                    }
                 )
-            )
+            create_user_site(user_id, sub[1])
+
+            if bind_message:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    messages=[TextSendMessage(
+                        text=f'訂閱 {sub[1]} 成功！',
+                        quick_reply=QuickReply(items=[
+                            QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
+                        ])
+                    ), bind_message]
+                )
+            else:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    messages=TextSendMessage(
+                        text=f'訂閱 {sub[1]} 成功！',
+                        quick_reply=QuickReply(items=[
+                            QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
+                        ])
+                    )
+                )
         elif cancel_sub:
-            remove_user_site(user_id, cancel_sub)
+            remove_user_site(user_id, cancel_sub[1])
             line_bot_api.reply_message(
                 event.reply_token,
                 messages=TextSendMessage(
@@ -94,12 +150,12 @@ class LineController(Resource):
                         update_time=rows[index]['update_time']
                     ))
             flex_message.append(FlexSendMessage(
-                    alt_text=text,
-                    contents=CarouselContainer(contents),
-                    quick_reply=QuickReply(items=[
-                        QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
-                    ])
-                ))
+                alt_text=text,
+                contents=CarouselContainer(contents),
+                quick_reply=QuickReply(items=[
+                    QuickReplyButton(action=MessageAction(label="所有縣市", text="所有縣市"))
+                ])
+            ))
             line_bot_api.reply_message(
                 event.reply_token,
                 messages=flex_message

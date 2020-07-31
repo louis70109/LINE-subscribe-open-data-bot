@@ -73,3 +73,13 @@ def create_user_notify(line_id, token):
             )''')
     conn.commit()
     conn.close()
+
+
+def find_user_notify_info(line_id):
+    conn = sqlite3.connect(os.path.abspath('Air.db'))
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(f''' SELECT * FROM user WHERE line_id = "{line_id}" ''')
+    row = cur.fetchone()
+    conn.close()
+    return row
