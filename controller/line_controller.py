@@ -15,6 +15,7 @@ from utils.flex import create_county_flex, counties_template
 
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
+NOTIFY_BIND_URL = os.getenv('LIFF_BIND_ID')
 
 
 class LineController(Resource):
@@ -73,7 +74,7 @@ class LineController(Resource):
                                     "action": {
                                         "type": "uri",
                                         "label": "點我綁定",
-                                        "uri": "https://linecorp.com"
+                                        "uri": NOTIFY_BIND_URL
                                     }
                                 },
                                 {
