@@ -1,42 +1,38 @@
-## http://opendata.epa.gov.tw/webapi/Data/REWIQA/?$orderby=SiteName&$skip=0&$top=1000&format=json
+import os
+import sqlite3
+from lotify.client import Client
 
-import requests
+lotify = Client()
+try:
+    conn = sqlite3.connect(os.path.abspath('Air.db'))
+    conn.row_factory = sqlite3.Row
+except:
+    raise ValueError("Connect SQLite error")
+print("Connecting...")
 
-air_data = requests.get(
-    'http://opendata.epa.gov.tw/webapi/Data/REWIQA/?$orderby=SiteName&$skip=0&$top=1000&format=json')
+c = conn.cursor()
+print("Sync date to DB!!")
 
-airs = air_data.json()
-status = ["良好", "普通", "對敏感族群不健康", "對所有族群不健康", "非常不健康", "危害", "資料有誤"]
-average = [50, 100, 150, 200, 250, 300]
-taichung = []
-for air in airs:
-    if air.get('County') == '臺中市':
-        taichung.append(air)
+c.execute(f'''
+    SELECT user.notify_token, user_site.* from user LEFT JOIN user_site ON user.line_id = user_site.line_id
+''')
+users = c.fetchall()
+c.execute(f'''
+    SELECT  us.line_id, taiwan.*  from user_site as us LEFT JOIN taiwan ON us.site_name = taiwan.site_name
+''')
+sites = c.fetchall()
+print("Closing...Bye")
+conn.close()
 
-sum, count = 0, 0
-
-for t in taichung:
-    if t['SiteName'] == "西屯" or t['SiteName'] == "沙鹿":
-        count += 1
-        if t['AQI'] != 0:
-            sum += int(t['AQI'])
-
-sw = 0
-total = sum / count
-
-if total >= 0 and total <= 50:
-    payload = f"\n空氣品質: {status[0]}"
-elif total >= 51 and total <= 100:
-    payload = f"\n空氣品質: {status[1]}"
-elif total >= 101 and total <= 150:
-    payload = f"\n空氣品質: {status[2]}"
-elif total >= 151 and total <= 200:
-    payload = f"\n空氣品質: {status[3]}"
-elif total >= 201 and total <= 250:
-    payload = f"\n空氣品質: {status[4]}"
-elif total >= 251 and total <= 300:
-    payload = f"\n空氣品質: {status[5]}"
-else:
-    payload = f"\n空氣品質: {status[6]}"
-
-print(payload)
+messages = ''
+already = []
+for user in users:
+    for site in sites:
+        if user['line_id'] in already:
+            break
+        if user['line_id'] == site['line_id']:
+            messages += f'''\n{site['county']}/{site['site_name']} ➡ ️{site['status']}'''
+    if user['line_id'] not in already:
+        lotify.send_message(access_token=user['notify_token'], message=messages)
+        already.append(user['line_id'])
+        messages = ''
