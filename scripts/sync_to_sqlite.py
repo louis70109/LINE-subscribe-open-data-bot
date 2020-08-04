@@ -9,14 +9,16 @@ airs = air_data.json()
 if airs:
     print("Get data success")
 taichung = []
-
-conn = sqlite3.connect(os.path.abspath('Air.db'))
+try:
+    conn = sqlite3.connect(os.path.abspath('Air.db'))
+except:
+    raise ValueError("Connect SQLite error")
 print("Connecting...")
 c = conn.cursor()
 print("Sync date to DB!!")
 for air in airs:
     c.execute(f'''
-        INSERT OR REPLACE INTO taichung (site_name, county, aqi, status, update_time)
+        INSERT OR REPLACE INTO taiwan (site_name, county, aqi, status, update_time)
           VALUES (
             "{air.get('SiteName')}", 
             "{air.get('County')}", 
