@@ -11,11 +11,11 @@ from linebot.models import FlexSendMessage, MessageEvent, TextMessage, \
 
 from utils.common import routing
 from utils.db import find_sites, create_user_site, remove_user_site, find_counties, find_user_notify_info
-from utils.flex import create_county_flex, counties_template
+from utils.flex import create_county_flex, counties_template, bind_notify_content
 
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
-NOTIFY_BIND_URL = os.getenv('LIFF_BIND_ID')
+NOTIFY_BIND_URL = f"https://liff.line.me/{os.getenv('LIFF_BIND_ID')}"
 
 
 class LineController(Resource):
@@ -47,44 +47,7 @@ class LineController(Resource):
             if row is None:
                 bind_message = FlexSendMessage(
                     alt_text=event.message.text,
-                    contents={
-                        "type": "bubble",
-                        "body": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "contents": [
-                                {
-                                    "type": "text",
-                                    "text": "🔔 您尚未綁定 LINE Notify\n綁定後即可收到推播訊息 ⬇️",
-                                    "size": "xl",
-                                    "align": "center",
-                                    "wrap": True
-                                }
-                            ]
-                        },
-                        "footer": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "spacing": "sm",
-                            "contents": [
-                                {
-                                    "type": "button",
-                                    "style": "link",
-                                    "height": "sm",
-                                    "action": {
-                                        "type": "uri",
-                                        "label": "點我綁定",
-                                        "uri": NOTIFY_BIND_URL
-                                    }
-                                },
-                                {
-                                    "type": "spacer",
-                                    "size": "sm"
-                                }
-                            ],
-                            "flex": 0
-                        }
-                    }
+                    contents=bind_notify_content(NOTIFY_BIND_URL)
                 )
             create_user_site(user_id, sub[1])
 
@@ -134,6 +97,12 @@ class LineController(Resource):
             )
         else:
             rows = find_sites(text)
+            if not rows:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    messages=TextSendMessage(text="請輸入「所有縣市」")
+                )
+
             contents, flex_message = [], []
             for index in range(len(rows)):
                 if (index + 1) % 10 == 0:

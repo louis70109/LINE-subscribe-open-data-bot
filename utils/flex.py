@@ -205,3 +205,44 @@ def counties_template(counties):
             contents = []
 
     return total
+
+
+def bind_notify_content(url):
+    return {
+        "type": "bubble",
+        "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "🔔 您尚未綁定 LINE Notify\n綁定後即可收到推播訊息 ⬇️",
+                    "size": "xl",
+                    "align": "center",
+                    "wrap": True
+                }
+            ]
+        },
+        "footer": {
+            "type": "box",
+            "layout": "vertical",
+            "spacing": "sm",
+            "contents": [
+                {
+                    "type": "button",
+                    "style": "link",
+                    "height": "sm",
+                    "action": {
+                        "type": "uri",
+                        "label": "點我綁定",
+                        "uri": url
+                    }
+                },
+                {
+                    "type": "spacer",
+                    "size": "sm"
+                }
+            ],
+            "flex": 0
+        }
+    }
