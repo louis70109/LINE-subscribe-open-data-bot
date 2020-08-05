@@ -1,21 +1,65 @@
 
 # LINE Icon Switch API sample
 
-LINE new API - [Icon Switch](https://developers.line.biz/zh-hant/reference/messaging-api/#icon-nickname-switch): this API can change icon and display name in same **LINE BOT**
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/Python-%3E%3D%203.5-blue.svg)](https://badge.fury.io/py/lotify)
 
-# Trigger text
-This bot will catch trigger text to change name and avatar !!🎉
-- Sally
-- Brown
-- Cony
 
-![](https://i.imgur.com/TbtdNFjl.png)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+The bot provides subscribing and notifying open data - air pollution.
+
+It use by:
+
+- flask/Python 3.8
+- LINE v10.12
+- LINE Notify
+- LINE Login/LIFF v2.3
+- Sqlite
+
+# Environment property
+
+These properties are need to export in environment.
+```
+LINE_CHANNEL_ACCESS_TOKEN=
+LINE_CHANNEL_SECRET=
+LINE_NOTIFY_CLIENT_ID=
+LINE_NOTIFY_CLIENT_SECRET=
+LINE_NOTIFY_REDIRECT_URI=
+LIFF_BIND_ID=
+LIFF_CONFIRM_ID=
+```
+
+## LIFF
+![](https://i.imgur.com/yvldqPA.png)
+
+# Trigger words
+
+- 所有縣市
+
+# Heroku
+
+Click `Configure Add-ons` and input `Heroku Scheduler` to install scheduler.
+
+![](https://i.imgur.com/cval2jv.png)
+
+Add two jobs:
+
+- `python scripts/sync_to_sqlite.py`
+- `python scripts/notify_me.py`
+
+
+If you are not sure where are files in, use following up commands:
+```
+heroku run bash
+heroku logs --tail
+```
 
 # Developer Side
 
 ## LINE account
 
-- Got A LINE Bot API devloper account
+- Got A LINE Bot API developer account
 Make sure you already registered, if you need use LINE Bot.
 
 
@@ -37,14 +81,13 @@ pip install -r requirements.txt --user
 python api.py
 ```
 
-> [2020/03/28] LINE just not already release tag in SDK, so I use git method to install NEW feature package(icon switch).
 2. Create a provisional Https:
 
 ```
 ngrok http 5000
 ```
 
-or maybe you have npm enviroment:
+or maybe you have npm environment:
 
 ```
 npx ngrok http 5000
@@ -53,30 +96,6 @@ npx ngrok http 5000
 
 3. Copy url to LINE Developer Console
 
-## If you have AWS account
-1. Install serverless via npm:
-
-```bash=
-$ npm install -g serverless
-```
-
-2. Setup your **AWS** ceritficate
-
-```bash=
-export AWS_ACCESS_KEY_ID=<your-key-here>
-export AWS_SECRET_ACCESS_KEY=<your-secret-key-here>
-```
-
-3. Deploy the example:
-
-```bash=
-npm install
-pip install -r requirements.txt --user
-serverless wsgi serve # local testing
-serverless deploy     # deploy to AWS
-```
-
-4. If deploy, copy the url to LINE Developer Console
 # License
 
 MIT License
