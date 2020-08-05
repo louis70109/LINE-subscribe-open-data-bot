@@ -6,7 +6,7 @@ def find_counties():
     conn = sqlite3.connect(os.path.abspath('Air.db'))
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('SELECT * FROM taichung GROUP BY county')
+    cur.execute('SELECT * FROM taiwan GROUP BY county')
     rows = cur.fetchall()
     conn.close()
     return rows
@@ -18,7 +18,7 @@ def find_sites(county):
     cur = conn.cursor()
     cur.execute(
         f'''
-        SELECT * FROM taichung WHERE county = "{county}"
+        SELECT * FROM taiwan WHERE county = "{county}"
     ''')
     rows = cur.fetchall()
     conn.close()
@@ -43,7 +43,7 @@ def create_user_site(line_id, site):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute(f'''
-            INSERT OR REPLACE INTO user_site (line_id, site_name)
+            INSERT INTO user_site (line_id, site_name)
               VALUES (
                 "{line_id}", 
                 "{site}"
