@@ -3,7 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-%3E%3D%203.5-blue.svg)](https://badge.fury.io/py/lotify)
 
-
 The bot provides subscribing and notifying [open data - air pollution](http://opendata.epa.gov.tw/webapi/Data/REWIQA/?$orderby=SiteName&$skip=0&$top=1000&format=json).
 
 It builds by:
@@ -15,7 +14,6 @@ It builds by:
 - Sqlite
 
 You need Github, LINE, Heroku accounts to deploy this bot.
-
 
 # Trigger words
 
@@ -51,8 +49,6 @@ LIFF_CONFIRM_ID=
   - Channel Secret
   - Channel Access Token (You need to issue one here)
 
-
-
 ## LIFF (LIFF_BIND_ID & LIFF_CONFIRM_ID)
 
 - Input `https://{YOUR_URL}/notify` into binding LIFF app.
@@ -66,10 +62,10 @@ LIFF_CONFIRM_ID=
 
 ![](https://i.imgur.com/SZG7Re6.png)
 
-- Copy callback LIFF app url to NOTIFY callback url column.
+- Copy `callback LIFF app` url to NOTIFY callback url column.
 
 ![](https://i.imgur.com/VGaKILZ.png)
- 
+
 ## Local testing
 
 1. first terminal window
@@ -104,7 +100,7 @@ Click `Configure Add-ons` and input `Heroku Scheduler` to install scheduler.
 
 ![](https://i.imgur.com/cval2jv.png)
 
-Add two jobs:
+Add two jobs on Heroku Schedular:
 
 - `python scripts/sync_to_sqlite.py`
 - `python scripts/notify_me.py`
