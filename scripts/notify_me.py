@@ -3,15 +3,14 @@ import sqlite3
 from lotify.client import Client
 
 lotify = Client()
+print("Connecting...")
 try:
     conn = sqlite3.connect(os.path.abspath('Air.db'))
     conn.row_factory = sqlite3.Row
 except:
     raise ValueError("Connect SQLite error")
-print("Connecting...")
-
 c = conn.cursor()
-print("Sync date to DB!!")
+print("Cursor start...")
 
 c.execute(f'''
     SELECT user.notify_token, user_site.* from user LEFT JOIN user_site ON user.line_id = user_site.line_id
@@ -21,9 +20,9 @@ c.execute(f'''
     SELECT  us.line_id, taiwan.*  from user_site as us LEFT JOIN taiwan ON us.site_name = taiwan.site_name
 ''')
 sites = c.fetchall()
-print("Closing...Bye")
+print("Fetch data success!")
 conn.close()
-
+print('Close connection')
 messages = ''
 already = []
 for user in users:
@@ -36,3 +35,4 @@ for user in users:
         lotify.send_message(access_token=user['notify_token'], message=messages)
         already.append(user['line_id'])
         messages = ''
+print('Notifications have been send.')
