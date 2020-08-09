@@ -1,4 +1,4 @@
-# LINE Icon Switch API sample
+# Subscribe open data with LINE Bot/Notify/LIFF
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-%3E%3D%203.5-blue.svg)](https://badge.fury.io/py/lotify)
