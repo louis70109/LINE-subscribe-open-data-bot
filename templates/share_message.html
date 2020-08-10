@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="https://static.line-scdn.net/liff/edge/versions/2.3.1/sdk.js"></script>
+  </body>
+  <script>
+    liff
+    .init({ liffId: '{{ liff_id }}' })
+    .then(() => {
+        if (!liff.isLoggedIn()) {
+            liff.login({ redirectUri: location.href })
+            return new Promise(resolve => {}) // 永遠不會結束的 Promise
+        }
+        if (liff.isApiAvailable('shareTargetPicker')) {
+          liff.shareTargetPicker([
+            {{ flex | tojson }}
+          ])
+            .then(function (res) {
+              if (res) {
+                // succeeded in sending a message through TargetPicker
+                console.log(`[${res.status}] Message sent!`);
+                liff.closeWindow();
+              } else {
+                const [majorVer, minorVer] = (liff.getLineVersion() || "").split('.');
+                if (parseInt(majorVer) == 10 && parseInt(minorVer) < 11) {
+                  // LINE 10.3.0 - 10.10.0
+                  // Old LINE will access here regardless of user's action
+                  console.log('TargetPicker was opened at least. Whether succeeded to send message is unclear')
+                } else {
+                  // LINE 10.11.0 -
+                  // sending message canceled
+                  console.log('TargetPicker was closed!')
+                }
+              }
+            }).catch(function (error) {
+              // something went wrong before sending a message
+              console.log(error)
+              console.log('something wrong happen')
+            })
+        }
+    })
+    .catch((err) => {
+      alert("ERROR 0.0")
+    });
+  </script>
+</html>
