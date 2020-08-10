@@ -1,7 +1,7 @@
 from utils.db import find_user_site
 
 
-def create_county_flex(line_id, county, site, status, update_time):
+def county_flex_template(county, site, status, update_time):
     return {
         "type": "bubble",
         "body": {
@@ -51,7 +51,7 @@ def create_county_flex(line_id, county, site, status, update_time):
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": "狀態",
+                                    "text": "空氣",
                                     "color": "#aaaaaa",
                                     "size": "sm",
                                     "flex": 1
@@ -91,10 +91,16 @@ def create_county_flex(line_id, county, site, status, update_time):
                     ]
                 }
             ]
-        },
+        }
+    }
+
+
+def create_county_flex(line_id, county, site, status, update_time):
+    return {
+        **county_flex_template(county, site, status, update_time),
         "footer": {
             "type": "box",
-            "layout": "vertical",
+            "layout": "horizontal",
             "spacing": "sm",
             "flex": 0,
             "contents": check_user_subscribe_site(line_id=line_id, site=site)
@@ -114,7 +120,7 @@ def check_user_subscribe_site(line_id, site):
             "height": "sm",
             "action": {
                 "type": "message",
-                "label": "查詢其他區域",
+                "label": "查詢",
                 "text": "所有縣市"
             }
         }, {
@@ -127,8 +133,14 @@ def check_user_subscribe_site(line_id, site):
                 "text": f"取消訂閱 {site}"
             }
         }, {
-            "type": "spacer",
-            "size": "sm"
+            "type": "button",
+            "style": "primary",
+            "height": "sm",
+            "action": {
+                "type": "uri",
+                "label": "分享",
+                "uri": f"https://liff.line.me/1622939248-JYQqZerE?site={site}"
+            }
         }]
     else:
         return [{
@@ -137,7 +149,7 @@ def check_user_subscribe_site(line_id, site):
             "height": "sm",
             "action": {
                 "type": "message",
-                "label": "查詢其他區域",
+                "label": "查詢",
                 "text": "所有縣市"
             }
         }, {
@@ -150,8 +162,14 @@ def check_user_subscribe_site(line_id, site):
                 "text": f"訂閱 {site}"
             }
         }, {
-            "type": "spacer",
-            "size": "sm"
+            "type": "button",
+            "style": "primary",
+            "height": "sm",
+            "action": {
+                "type": "uri",
+                "label": "分享",
+                "uri": f"https://liff.line.me/1622939248-JYQqZerE?site={site}"
+            }
         }]
 
 
