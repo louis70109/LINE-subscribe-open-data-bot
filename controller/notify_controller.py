@@ -41,12 +41,3 @@ class CallbackController(Resource):
         token = lotify.get_access_token(code=request.args.get('code'))
         create_user_notify(user_id, token)
         return Response(render_template('confirm.html', liff_id=LIFF_CONFIRM_ID))
-
-
-class LineNotifyController(Resource):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def post(self):
-        pass
