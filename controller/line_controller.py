@@ -10,7 +10,8 @@ from linebot.models import FlexSendMessage, MessageEvent, TextMessage, \
     CarouselContainer, TextSendMessage, QuickReply, QuickReplyButton, MessageAction
 
 from utils.common import routing
-from utils.db import find_sites, create_user_site, remove_user_site, find_counties, find_user_notify_info
+from utils.db import create_user_site, remove_user_site, find_counties, find_user_notify_info, \
+    find_sites_by_county
 from utils.flex import create_county_flex, counties_template, bind_notify_content
 
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
@@ -96,7 +97,7 @@ class LineController(Resource):
                 messages=message
             )
         else:
-            rows = find_sites(text)
+            rows = find_sites_by_county(text)
             if not rows:
                 line_bot_api.reply_message(
                     event.reply_token,
@@ -130,3 +131,4 @@ class LineController(Resource):
                 event.reply_token,
                 messages=flex_message
             )
+        return 'OK'

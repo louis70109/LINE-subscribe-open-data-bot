@@ -12,17 +12,24 @@ def find_counties():
     return rows
 
 
-def find_sites(county):
+def find_sites_by_county(county):
     conn = sqlite3.connect(os.path.abspath('Air.db'))
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute(
-        f'''
-        SELECT * FROM taiwan WHERE county = "{county}"
-    ''')
+    cur.execute(f''' SELECT * FROM taiwan WHERE county = "{county}" ''')
     rows = cur.fetchall()
     conn.close()
     return rows
+
+
+def find_site(site):
+    conn = sqlite3.connect(os.path.abspath('Air.db'))
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(f''' SELECT * FROM taiwan WHERE site_name = "{site}" ''')
+    row = cur.fetchone()
+    conn.close()
+    return row
 
 
 def find_user_site(line_id, site):
