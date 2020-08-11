@@ -1,5 +1,4 @@
 .Python
-*.py
 *.env
 __pycache__
 env/
