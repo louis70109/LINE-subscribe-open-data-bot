@@ -3,12 +3,11 @@ from flask_cors import CORS
 from flask_restful import Api
 from dotenv import load_dotenv
 
-from controller.liff_controller import LiffController
-
 load_dotenv()
 
 from controller.line_controller import LineController
 from controller.notify_controller import CallbackController, RootController, AuthLinkController
+from controller.liff_controller import LiffController
 
 app = Flask(__name__)
 CORS(app)
