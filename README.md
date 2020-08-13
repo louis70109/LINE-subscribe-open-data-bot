@@ -102,7 +102,7 @@ Click `Configure Add-ons` and input `Heroku Scheduler` to install scheduler.
 
 Add two jobs on Heroku Schedular:
 
-- `python scripts/sync_to_sqlite.py`
+- `python scripts/sync_to_sql.py`
 - `python scripts/notify_me.py`
 
 If you are not sure where are files in, use following up commands:

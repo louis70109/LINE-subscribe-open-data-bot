@@ -26,6 +26,6 @@ for air in airs:
             "{air.get('Status')}",
             "{air.get('PublishTime')}"
         );''')
-    conn.commit()
+conn.commit()
 print("Closing...Bye")
 conn.close()
