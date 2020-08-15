@@ -1,92 +1,120 @@
-import os
-import sqlite3
+import psycopg2
+import psycopg2.extras
+
+URL = urlparse.urlparse(os.getenv('DATABASE_URL'))
+DB_NAME = URL.path[1:]
+USER = URL.username
+PASSWORD = URL.password
+HOST = URL.hostname
+PORT = URL.port
+
+
+class Database:
+    conns = []
+
+    def __enter__(self):
+        return self
+
+    def connect(self):
+        conn = psycopg2.connect(
+            dbname=DB_NAME,
+            user=USER,
+            password=PASSWORD,
+            host=HOST,
+            port=PORT
+        )
+        self.conns.append(conn)
+
+        return conn
+
+    def __exit__(self, type, value, traceback):
+        for conn in self.conns:
+            conn.close()
+
+        self.conns.clear()
 
 
 def find_counties():
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM taiwan GROUP BY county')
-    rows = cur.fetchall()
-    conn.close()
-    return rows
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute('SELECT * FROM taiwan order by county')
+        rows = cur.fetchall()
+    county = []
+    tmp = ''
+    for row in rows:
+        if tmp != row['county']:
+            county.append(row)
+
+        tmp = row['county']
+
+    return county
 
 
 def find_sites_by_county(county):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f''' SELECT * FROM taiwan WHERE county = "{county}" ''')
-    rows = cur.fetchall()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f''' SELECT * FROM taiwan WHERE county = '{county}' ''')
+        rows = cur.fetchall()
+
     return rows
 
 
 def find_site(site):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f''' SELECT * FROM taiwan WHERE site_name = "{site}" ''')
-    row = cur.fetchone()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f''' SELECT * FROM taiwan WHERE site_name = '{site}' ''')
+        row = cur.fetchone()
+
     return row
 
 
 def find_user_site(line_id, site):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(
-        f'''
-            SELECT * FROM user_site WHERE line_id = "{line_id}" and site_name = "{site}"
-        ''')
-    row = cur.fetchone()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(
+            f'''
+                SELECT * FROM user_site WHERE line_id = '{line_id}' and site_name = '{site}'
+            ''')
+        row = cur.fetchone()
+
     return row
 
 
 def create_user_site(line_id, site):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f'''
-            INSERT INTO user_site (line_id, site_name)
-              VALUES (
-                "{line_id}", 
-                "{site}"
-            );''')
-    conn.commit()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f'''
+                INSERT INTO user_site (line_id, site_name)
+                  VALUES (
+                    '{line_id}', 
+                    '{site}'
+                );''')
+        conn.commit()
 
 
 def remove_user_site(line_id, site):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f'DELETE FROM user_site WHERE line_id = "{line_id}" and site_name = "{site}"')
-    conn.commit()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f"DELETE FROM user_site WHERE line_id = '{line_id}' and site_name = '{site}'")
+        conn.commit()
 
 
 def create_user_notify(line_id, token):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f'''
-            INSERT OR REPLACE INTO user (line_id, notify_token)
-              VALUES (
-                "{line_id}", 
-                "{token}"
-            )''')
-    conn.commit()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f'''
+                INSERT OR REPLACE INTO user (line_id, notify_token)
+                  VALUES (
+                    '{line_id}', 
+                    '{token}'
+                )''')
+        conn.commit()
 
 
 def find_user_notify_info(line_id):
-    conn = sqlite3.connect(os.path.abspath('Air.db'))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute(f''' SELECT * FROM user WHERE line_id = "{line_id}" ''')
-    row = cur.fetchone()
-    conn.close()
+    with Database() as db, db.connect() as conn, conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(f''' SELECT * FROM user WHERE line_id = '{line_id}' ''')
+        row = cur.fetchone()
+
     return row
