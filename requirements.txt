@@ -5,3 +5,4 @@ line-bot-sdk
 python-dotenv
 lotify
 gunicorn
+psycopg2-binary
