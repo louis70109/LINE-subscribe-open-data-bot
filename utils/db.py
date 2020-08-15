@@ -1,5 +1,7 @@
 import psycopg2
 import psycopg2.extras
+import urllib.parse as urlparse
+import os
 
 URL = urlparse.urlparse(os.getenv('DATABASE_URL'))
 DB_NAME = URL.path[1:]
