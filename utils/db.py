@@ -116,7 +116,7 @@ def create_user_notify(line_id, token):
 def find_user_notify_info(line_id):
     with Database() as db, db.connect() as conn, conn.cursor(
             cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-        cur.execute(f''' SELECT * FROM user WHERE line_id = '{line_id}' ''')
+        cur.execute(f''' SELECT * FROM "user" WHERE line_id = '{line_id}' ''')
         row = cur.fetchone()
 
     return row
