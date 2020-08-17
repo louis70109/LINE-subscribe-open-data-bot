@@ -5,6 +5,8 @@
 
 The bot provides subscribing and notifying [open data - air pollution](http://opendata.epa.gov.tw/webapi/Data/REWIQA/?$orderby=SiteName&$skip=0&$top=1000&format=json).
 
+Using `所有縣市` trigger and start bot.
+
 It builds by:
 
 - flask/Python 3.8
@@ -13,11 +15,7 @@ It builds by:
 - LINE Login/LIFF v2.3
 - Sqlite
 
-You need Github, LINE, Heroku accounts to deploy this bot.
-
-# Trigger words
-
-- 所有縣市
+> You need Github, LINE, Heroku accounts to deploy this bot.
 
 # Developer Side
 
@@ -33,6 +31,7 @@ LINE_NOTIFY_CLIENT_SECRET=
 LINE_NOTIFY_REDIRECT_URI=
 LIFF_BIND_ID=
 LIFF_CONFIRM_ID=
+DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:5432/postgres
 ```
 
 ## LINE account (LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET)
@@ -100,10 +99,14 @@ Click `Configure Add-ons` and input `Heroku Scheduler` to install scheduler.
 
 ![](https://i.imgur.com/cval2jv.png)
 
-Add two jobs on Heroku Schedular:
+- Add two jobs on `Heroku Schedular`:
 
-- `python scripts/sync_to_sql.py`
-- `python scripts/notify_me.py`
+  - `python scripts/sync_to_sql.py`
+  - `python scripts/notify_me.py`
+
+- Add `Heroku Postgres` and it would create `DATABASE_URL` environment variable automatically.
+
+![](https://i.imgur.com/wCFeUlu.png)
 
 If you are not sure where are files in, use following up commands:
 
