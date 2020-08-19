@@ -105,11 +105,14 @@ def create_user_notify(line_id, token):
     with Database() as db, db.connect() as conn, conn.cursor(
             cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(f'''
-                INSERT OR REPLACE INTO user (line_id, notify_token)
-                  VALUES (
-                    '{line_id}', 
-                    '{token}'
-                )''')
+            INSERT INTO user (line_id, notify_token)
+              VALUES (
+                '{line_id}', 
+                '{token}'
+            ) ON CONFLICT user_pkey
+            ON CONFLICT ON CONSTRAINT user_pkey 
+            DO UPDATE SET notify_token='{token}' WHERE lottery.line_id='{line_id}'
+        ''')
         conn.commit()
 
 
