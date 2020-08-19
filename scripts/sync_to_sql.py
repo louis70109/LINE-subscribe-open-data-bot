@@ -62,7 +62,7 @@ try:
             (
                 line_id character varying(35) COLLATE pg_catalog."default" NOT NULL,
                 notify_token character varying(100) COLLATE pg_catalog."default" NOT NULL,
-                CONSTRAINT user_pkey PRIMARY KEY (notify_token)
+                CONSTRAINT user_pkey PRIMARY KEY (line_id)
             )
             TABLESPACE pg_default;
             
