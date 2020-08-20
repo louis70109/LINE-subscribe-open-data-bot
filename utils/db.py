@@ -105,7 +105,7 @@ def create_user_notify(line_id, token):
     with Database() as db, db.connect() as conn, conn.cursor(
             cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(f'''
-            INSERT INTO user (line_id, notify_token)
+            INSERT INTO "user" (line_id, notify_token)
               VALUES (
                 '{line_id}', 
                 '{token}'
