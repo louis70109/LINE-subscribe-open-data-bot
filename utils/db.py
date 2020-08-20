@@ -111,7 +111,7 @@ def create_user_notify(line_id, token):
                 '{token}'
             ) ON CONFLICT
             ON CONSTRAINT user_pkey 
-            DO UPDATE SET notify_token='{token}' WHERE lottery.line_id='{line_id}'
+            DO UPDATE SET notify_token='{token}' WHERE "user".line_id='{line_id}'
         ''')
         conn.commit()
 
