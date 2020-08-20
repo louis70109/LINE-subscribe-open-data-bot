@@ -170,7 +170,7 @@ def check_user_subscribe_site(line_id, site):
             "action": {
                 "type": "uri",
                 "label": "分享",
-                "uri": f"https://liff.line.me/1622939248-JYQqZerE?site={site}"
+                "uri": f"https://liff.line.me/{os.getenv('LIFF_SHARE_ID')}?site={site}"
             }
         }]
 
