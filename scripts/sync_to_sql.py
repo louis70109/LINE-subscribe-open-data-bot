@@ -48,19 +48,19 @@ try:
                 site_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
                 county character varying(20) COLLATE pg_catalog."default",
                 aqi character varying(10) COLLATE pg_catalog."default" DEFAULT 0,
-                status character varying(5) COLLATE pg_catalog."default",
+                status character varying(15) COLLATE pg_catalog."default",
                 update_time character varying(20) COLLATE pg_catalog."default",
                 CONSTRAINT taiwan_pkey PRIMARY KEY (site_name)
             );
             CREATE TABLE public.user_site
             (
-                line_id character varying(35) COLLATE pg_catalog."default",
+                line_id character varying(50) COLLATE pg_catalog."default",
                 site_name character varying(20) COLLATE pg_catalog."default",
                 CONSTRAINT site UNIQUE (site_name)
             );
             CREATE TABLE public."user"
             (
-                line_id character varying(35) COLLATE pg_catalog."default" NOT NULL,
+                line_id character varying(50) COLLATE pg_catalog."default" NOT NULL,
                 notify_token character varying(100) COLLATE pg_catalog."default" NOT NULL,
                 CONSTRAINT user_pkey PRIMARY KEY (line_id)
             )
