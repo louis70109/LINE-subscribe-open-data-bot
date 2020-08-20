@@ -102,7 +102,7 @@ def create_county_flex(line_id, county, site, status, update_time):
         **county_flex_template(county, site, status, update_time),
         "footer": {
             "type": "box",
-            "layout": "horizontal",
+            "layout": "vertical",
             "spacing": "sm",
             "flex": 0,
             "contents": check_user_subscribe_site(line_id=line_id, site=site)
