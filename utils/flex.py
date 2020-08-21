@@ -2,7 +2,7 @@ import os
 
 from utils.db import find_user_site
 
-
+SHARE_ID = os.getenv('LIFF_SHARE_ID')
 def county_flex_template(county, site, status, update_time):
     return {
         "type": "bubble",
@@ -113,6 +113,8 @@ def create_county_flex(line_id, county, site, status, update_time):
 def check_user_subscribe_site(line_id, site):
     sub_site = False
     row = find_user_site(line_id, site)
+    import urllib.parse as parser
+    site = parser.quote(site)
     if row:
         sub_site = True
     if sub_site:
@@ -141,8 +143,11 @@ def check_user_subscribe_site(line_id, site):
             "action": {
                 "type": "uri",
                 "label": "分享",
-                "uri": f"https://liff.line.me/{os.getenv('LIFF_SHARE_ID')}?site={site}"
+                "uri": f"https://liff.line.me/{SHARE_ID}/?site={site}"
             }
+        }, {
+            "type": "spacer",
+            "size": "sm"
         }]
     else:
         return [{
@@ -170,8 +175,11 @@ def check_user_subscribe_site(line_id, site):
             "action": {
                 "type": "uri",
                 "label": "分享",
-                "uri": f"https://liff.line.me/{os.getenv('LIFF_SHARE_ID')}?site={site}"
+                "uri": f"https://liff.line.me/{SHARE_ID}/?site={site}"
             }
+        }, {
+            "type": "spacer",
+            "size": "sm"
         }]
 
 

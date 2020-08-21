@@ -19,6 +19,8 @@ class LiffController(Resource):
             return Response(render_template('liff_redirect.html', liff_id=AIR_ID))
         site = request.args.get('site')
         if site:
+            import urllib.parse as parser
+            site = parser.unquote(site)
             row = find_site(site)
             flex = county_flex_template(
                 county=row['county'],
