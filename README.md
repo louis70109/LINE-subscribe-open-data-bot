@@ -13,7 +13,7 @@ It builds by:
 - LINE v10.12
 - LINE Notify
 - LINE Login/LIFF v2.3
-- Sqlite
+- PostgreSQL
 
 > You need Github, LINE, Heroku accounts to deploy this bot.
 
