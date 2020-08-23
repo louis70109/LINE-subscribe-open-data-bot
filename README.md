@@ -71,7 +71,7 @@ DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:5432/postgres
 1. first terminal window
 
 ```
-cp .env.sample .env
+cp .env.example .env
 pip install -r requirements.txt --user
 python api.py
 ```
