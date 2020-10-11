@@ -4,9 +4,6 @@ import psycopg2.extras
 
 import urllib.parse as urlparse
 import os
-from apscheduler.schedulers.blocking import BlockingScheduler
-
-sched = BlockingScheduler()
 
 URL = urlparse.urlparse(os.getenv('DATABASE_URL'))
 DB_NAME = URL.path[1:]
@@ -41,7 +38,6 @@ class Database:
         self.conns.clear()
 
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', minute='*/2')
 def notify_me():
     lotify = Client()
     print("Connecting...")
