@@ -8,7 +8,7 @@
     "python",
     "static"
   ],
-  "addons": ["heroku-postgresql:hobby-dev"],
+  "addons": ["heroku-postgresql:hobby-dev", "papertrail"],
   "env": {
     "PY_ENV": "production"
   },
