@@ -6,3 +6,4 @@ python-dotenv
 lotify
 gunicorn
 psycopg2-binary
+APScheduler==3.6.1
