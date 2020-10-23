@@ -2,13 +2,9 @@ import requests
 import psycopg2
 import psycopg2.extras
 
-from apscheduler.schedulers.blocking import BlockingScheduler
 import urllib.parse as urlparse
 import os
-
 from lotify.client import Client
-
-sched = BlockingScheduler()
 
 URL = urlparse.urlparse(os.getenv('DATABASE_URL'))
 DB_NAME = URL.path[1:]
