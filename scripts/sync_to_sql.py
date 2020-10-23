@@ -42,40 +42,6 @@ class Database:
 
         self.conns.clear()
 
-
-@sched.scheduled_job('cron', day_of_week='mon-fri', minute='*/1')
-def notify_me():
-    lotify = Client()
-    print("Connecting...")
-    print("Cursor start...")
-    with Database() as db, db.connect() as conn, conn.cursor(
-            cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-        cur.execute(f'''
-            SELECT "user".notify_token, user_site.* from "user" LEFT JOIN user_site ON "user".line_id = user_site.line_id
-        ''')
-        users = cur.fetchall()
-        cur.execute(f'''
-            SELECT  us.line_id, taiwan.* from user_site as us LEFT JOIN taiwan ON us.site_name = taiwan.site_name
-        ''')
-        sites = cur.fetchall()
-        print("Fetch data success!")
-    print('Close connection')
-    messages = ''
-    already = []
-    for user in users:
-        for site in sites:
-            if user['line_id'] in already:
-                break
-            if user['line_id'] == site['line_id']:
-                messages += f'''\n{site['county']}/{site['site_name']} ➡ ️{site['status']}'''
-        if user['line_id'] not in already:
-            lotify.send_message(access_token=user['notify_token'], message=messages)
-            already.append(user['line_id'])
-            messages = ''
-    print('Notifications have been send.')
-
-
-@sched.scheduled_job('cron', day_of_week='mon-fri', minute='*/30')
 def sync_to_db():
     print('Check tables status...')
     try:
