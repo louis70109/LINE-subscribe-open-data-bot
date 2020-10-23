@@ -116,6 +116,21 @@ heroku run bash
 heroku logs --tail
 ```
 
+# Generator
+
+You need to install `openapi-generator`, and use the following command to generate the SDK.(example is JavaScript)
+
+```
+openapi-generator generate -i https://{YOUR_URL}.herokuapp.com/api/swagger.json -g javascript -o lotifySampleApi
+cd lotifySampleApi
+npm install
+npm run build
+```
+
+Push to your Repository Center(e.g. GitHub, GitLab).
+
+Then you can install it by git.
+
 # License
 
 MIT License
